@@ -12,7 +12,7 @@ app.use(cors())
 app.use(express.json())
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://sudoku-react-gamma.vercel.app/'
+  'https://sudoku-react-gamma.vercel.app'
 ];
 
 app.use(cors({
