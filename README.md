@@ -24,6 +24,7 @@ Application web de Sudoku avec différentes difficultés, chronomètre et classe
 ```bash
 git clone https://github.com/ton-pseudo/sudoku-app.git
 cd sudoku-app
+```
 
 ### 2. Installer les dépendances
 ```cd frontend
@@ -37,6 +38,7 @@ npm install
 ```bash
 MONGO_URI=your_mongo_connection_string
 DB_NAME=sudoku
+```
 
 ### 4. Lancer en développement
 ```bash
