@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function LeaderBoardToggle({leaderBoard, leaderBoardByLevel, setLeaderBoardByLevel }) {
+export default function LeaderBoardToggle({ leaderBoard, leaderBoardByLevel, setLeaderBoardByLevel }) {
 
   const [showLeaderBoard, setShowLeaderBoard] = useState(false)
 

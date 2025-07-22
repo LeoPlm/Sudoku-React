@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import LeaderBoardToggle from "./LeaderBoardToggle";
 import { NewBestTime } from "./NewBestTime"
+import { ENDPOINTS } from "../config";
 
 const emptyGrid = Array.from({ length: 9 }, () => Array(9).fill(""));
 
@@ -64,7 +65,7 @@ export function SudokuGrid() {
   useEffect(() =>{
     const fetchSudoku = async () =>{
       try{
-        const response = await fetch(`http://localhost:3000/api/sudoku?level=${level}`)  
+        const response = await fetch(ENDPOINTS.sudoku(level))  
         const data = await response.json()
         const formatedGrid = data.puzzle.map(row => row.map(cell => cell === "0" ? "" : cell))
         setGrid(formatedGrid)
@@ -83,7 +84,7 @@ export function SudokuGrid() {
           setTime(prev => prev + 1)
         }, 1000)
         // get best time
-        const fetchBestTime = await fetch(`http://localhost:3000/api/leaderboard?level=${level}`)
+        const fetchBestTime = await fetch(ENDPOINTS.leaderboard(level))
         const dataBestTime = await fetchBestTime.json()
         setBestTime(dataBestTime)
       }catch(err){
@@ -116,18 +117,15 @@ export function SudokuGrid() {
   useEffect(() => {
     const fetchLeaderBoard = async () => {
       try{
-        const response = await fetch(`http://localhost:3000/api/leaderboard?level=${leaderBoardByLevel}`)
+        const response = await fetch(ENDPOINTS.leaderboard(leaderBoardByLevel))
         const data = await response.json()
         setLeaderBoard(data)
-
       } catch(err) {
         console.log("erreur message :", err.message)
       }
     }
     fetchLeaderBoard()
     }, [leaderBoardByLevel])
-
-
 
   return (
     <>
@@ -197,8 +195,6 @@ export function SudokuGrid() {
     isComplete = {isComplete}
     time = {time}
     level={level}/>
-
     </>
-
   )
 }

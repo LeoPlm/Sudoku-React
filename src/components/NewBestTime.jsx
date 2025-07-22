@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-
+import { ENDPOINTS } from "../config"
 
 export const NewBestTime = ({isComplete, bestTime, time, level}) => {
 
@@ -9,7 +9,7 @@ export const NewBestTime = ({isComplete, bestTime, time, level}) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try{
-      const response = await fetch(`http://localhost:3000/api/leaderboard?`, {
+      const response = await fetch(ENDPOINTS.postScore, {
         method : 'POST',
         headers : {'Content-Type' : 'application/json'},
         body : JSON.stringify({name : playerName, time, level})
