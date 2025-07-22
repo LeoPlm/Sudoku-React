@@ -1,12 +1,52 @@
-# React + Vite
+# Sudoku App 🧩
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web de Sudoku avec différentes difficultés, chronomètre et classement en ligne.
 
-Currently, two official plugins are available:
+## 🚀 Fonctionnalités
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Génération de grilles de Sudoku selon 3 niveaux : facile, moyen, difficile
+- Interface réactive avec React
+- Chronomètre pour mesurer le temps de résolution
+- Leaderboard connecté à MongoDB pour enregistrer les meilleurs scores
+- API Node.js + Express pour la gestion des scores
 
-## Expanding the ESLint configuration
+## 🛠️ Stack technique
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Frontend : React, Tailwind CSS
+- Backend : Node.js, Express
+- Base de données : MongoDB (via Mongoose)
+- Autres : dotenv, cors, nodemon, etc.
+
+## 📦 Installation
+
+### 1. Cloner le projet
+
+```bash
+git clone https://github.com/ton-pseudo/sudoku-app.git
+cd sudoku-app
+
+### 2. Installer les dépendances
+```cd frontend
+npm install
+
+cd ../backend
+npm install
+```
+
+### 3.Fichier .env requis dans le dossier backend
+```bash
+MONGO_URI=your_mongo_connection_string
+DB_NAME=sudoku
+
+### 4. Lancer en développement
+```bash
+cd backend
+node server.js
+
+cd app-sudoku
+npm run dev
+```
+
+Accès : --
+
+Réalisé par Léo P.
