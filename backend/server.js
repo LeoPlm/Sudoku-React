@@ -10,14 +10,6 @@ const PORT = process.env.PORT || 3000
 
 app.use(cors())
 app.use(express.json())
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://sudoku-react-gamma.vercel.app'
-];
-
-app.use(cors({
-  origin: allowedOrigins
-}));
 
 app.get('/api/sudoku', async (req, res) => {
   const level = req.query.level || "medium"
