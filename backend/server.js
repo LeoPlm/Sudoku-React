@@ -8,8 +8,21 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
 
-app.use(cors())
 app.use(express.json())
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://sudoku-react-gamma.vercel.app'
+];
+
+app.use(cors({
+  origin: allowedOrigins
+}));
+
+app.use((req, res, next) => {
+  console.log('Origin:', req.headers.origin);
+  next();
+});
 
 app.get('/api/sudoku', async (req, res) => {
   const level = req.query.level || "medium"
