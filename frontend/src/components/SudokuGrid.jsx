@@ -116,7 +116,6 @@ export function SudokuGrid() {
 
   useEffect(() => {
     const fetchLeaderBoard = async () => {
-      console.log(ENDPOINTS.leaderboard(leaderBoardByLevel))
       try{
         const response = await fetch(ENDPOINTS.leaderboard(leaderBoardByLevel))
         const data = await response.json()
