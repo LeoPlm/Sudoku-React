@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import LeaderBoardToggle from "./LeaderBoardToggle";
+import { useEffect, useRef, useState } from "react"
+import LeaderBoardToggle from "./LeaderBoardToggle"
 import { NewBestTime } from "./NewBestTime"
-import { ENDPOINTS } from "../config";
+import { ENDPOINTS } from "../config"
+import { Digits } from "./Digits"
 
 const emptyGrid = Array.from({ length: 9 }, () => Array(9).fill(""));
 
@@ -18,6 +19,8 @@ export function SudokuGrid() {
   const [time, setTime] = useState(0)
   const [leaderBoard, setLeaderBoard] = useState([])
   const [leaderBoardByLevel, setLeaderBoardByLevel] = useState("medium")
+  const [draftMode, setDraftMode] = useState(false)
+  const [draftNumbers, setDraftNumbers] = useState({})
 
   const isSolved = (grid, solution) => {
     for(let i = 0 ; i < 9 ; i++) {
@@ -44,11 +47,32 @@ export function SudokuGrid() {
     if(isComplete || lives === 0 || fixedGrid[row][col]) return
     const digit = val !== "" ? val[val.length-1] : ""
     const isError = digit && digit !== solution[row][col]
+    if(draftMode && /^[1-9]$/.test(digit)){
+      const key = `r${row}c${col}`
+      setDraftNumbers( prev => {
+        if(prev[key]?.includes(digit)){ 
+          return {
+            ...prev,
+            [key] : prev[key].split('').filter(x => x!== digit).join('')
+          }
+        }
+        return {
+          ...prev,
+            [key] : (prev[key] ? prev[key] + digit : digit)
+        }
+      }) 
+      return
+    }
     if(isError) setLives(l => l - 1)
     if (digit === "" || /^[1-9]$/.test(digit)) {
       const newGrid = grid.map((r) => [...r]);
       newGrid[row][col] = digit;
-      setGrid(newGrid);
+      setGrid(newGrid)
+      setDraftNumbers(prev => {
+        const copy = {...prev}
+        delete copy[`r${row}c${col}`]
+        return copy
+      })
     }
   }
 
@@ -156,6 +180,8 @@ export function SudokuGrid() {
       ))}
     </div>
 
+    <p className={`mt-3 min-h-[1.5rem] transition-opacity duration-500 ${isComplete ? "text-green-500" : "text-red-500"} ${message ? "opacity-100" : "opacity-0"}`}>{message}</p>
+
     <div className="grid grid-cols-9 mx-auto mt-5 w-fit bg-color-grid">
       {grid.map((row, i) =>
         row.map((cell, j) => {
@@ -167,28 +193,55 @@ export function SudokuGrid() {
             ${j % 3 === 0 ? "border-l-4" : "border-l"}
             ${i === 8 ? "border-b-4" : "border-b"}
             ${j === 8 ? "border-r-4" : "border-r"}
-          `;
-          return (
+          `
+          return draftNumbers[`r${i}c${j}`] ? (
+            <div className="relative w-10 h-10 ">
+              {/* Input invisible pour capter la saisie */}
+              <input
+                key={`${i}-${j}`}
+                value={cell}
+                onFocus={() => setFocusCell([i, j])}
+                onKeyDown={(e) => handleKeyDown(e, i, j)}
+                className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
+              />
+              {/* Affichage des brouillons comme une grille */}
+              <div
+                className={`grid grid-cols-3 gap-[1px] w-full h-full text-xs text-red-50 text-center ${border} ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ""} ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}
+              >
+                {Array.from({ length: 9 }).map((_, k) => {
+                  const digit = (draftNumbers[`r${i}c${j}`] || "").includes(String(k + 1)) ? k + 1 : ""
+                  return (
+                    <span key={k} className="flex items-center justify-center text-[0.55rem] text-gray-50 text-white/60 font-serif">
+                      {digit}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+          ) : (
             <input
               key={`${i}-${j}`}
               value={cell}
-              onChange={(e) => handleChange(i, j, e.target.value)}
               onFocus={() => setFocusCell([i,j])}
-              onBlur={() => setFocusCell(null)}
               onKeyDown={(e) => handleKeyDown(e, i, j) }
-              className={`w-10 h-10 ${border} text-center focus: outline-none 
-              ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} cursor-pointer carret text-2xl ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}
+              className={`w-10 h-10 ${border} text-center focus: outline-none ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} cursor-pointer carret text-2xl ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}
             />
           )
         })
       )}
     </div>
-      <p className={` mt-3 min-h-[1.5rem] transition-opacity duration-500 ${isComplete ? "text-green-500" : "text-red-500"} ${message ? "opacity-100" : "opacity-0"}`}>{message}</p>
+      
+    <Digits
+    handleChange = {handleChange}
+    focusCell = {focusCell}
+    setDraftMode = {setDraftMode}
+    draftMode = {draftMode}
+    />
 
-      <LeaderBoardToggle
-      leaderBoard = {leaderBoard}
-      leaderBoardByLevel={leaderBoardByLevel}
-      setLeaderBoardByLevel={setLeaderBoardByLevel}/>
+    <LeaderBoardToggle
+    leaderBoard = {leaderBoard}
+    leaderBoardByLevel={leaderBoardByLevel}
+    setLeaderBoardByLevel={setLeaderBoardByLevel}/>
 
     <NewBestTime
     bestTime = {bestTime} 
