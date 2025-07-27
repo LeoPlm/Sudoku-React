@@ -203,7 +203,7 @@ export function SudokuGrid() {
                 onFocus={() => setFocusCell([i, j])}
                 onKeyDown={(e) => handleKeyDown(e, i, j)}
                 className={`absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer`}
-                
+                readOnly
               />
               {/* Affichage des brouillons comme une grille */}
               <div className={`absolute inset-0 w-full h-full ${border} ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}>
