@@ -22,6 +22,8 @@ export function SudokuGrid() {
   const [draftMode, setDraftMode] = useState(false)
   const [draftNumbers, setDraftNumbers] = useState({})
 
+  const timerRef = useRef(null)
+
   const isSolved = (grid, solution) => {
     for(let i = 0 ; i < 9 ; i++) {
       for(let j = 0 ; j < 9 ; j++) {
@@ -32,8 +34,6 @@ export function SudokuGrid() {
     }
     return true 
   }
-
-  const timerRef = useRef(null)
 
   useEffect(() => {
     if(solution[0][0] === "") return
@@ -185,7 +185,7 @@ export function SudokuGrid() {
     <div className="grid grid-cols-9 mx-auto mt-5 w-fit bg-color-grid">
       {grid.map((row, i) =>
         row.map((cell, j) => {
-          const isError = cell !== '' && cell !== solution[i][j]
+          const isError = cell !== '' && cell !== solution[i][j] && !draftNumbers[`r${i}c${i}`]
           const isFixed = fixedGrid[i][j]
           const border = `
             border-white/20
@@ -194,7 +194,7 @@ export function SudokuGrid() {
             ${i === 8 ? "border-b-4" : "border-b"}
             ${j === 8 ? "border-r-4" : "border-r"}
           `
-          return draftNumbers[`r${i}c${j}`] ? (
+          return (
             <div className="relative w-10 h-10 ">
               {/* Input invisible pour capter la saisie */}
               <input
@@ -202,30 +202,29 @@ export function SudokuGrid() {
                 value={cell}
                 onFocus={() => setFocusCell([i, j])}
                 onKeyDown={(e) => handleKeyDown(e, i, j)}
-                className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
+                className={`absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer`}
               />
               {/* Affichage des brouillons comme une grille */}
-              <div
-                className={`grid grid-cols-3 gap-[1px] w-full h-full text-xs text-red-50 text-center ${border} ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ""} ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}
-              >
-                {Array.from({ length: 9 }).map((_, k) => {
-                  const digit = (draftNumbers[`r${i}c${j}`] || "").includes(String(k + 1)) ? k + 1 : ""
-                  return (
-                    <span key={k} className="flex items-center justify-center text-[0.55rem] text-gray-50 text-white/60 font-serif">
-                      {digit}
-                    </span>
-                  )
-                })}
+              <div className={`absolute inset-0 w-full h-full ${border} ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}>
+                {draftNumbers[`r${i}c${j}`] ? (
+                  <div className="grid grid-cols-3 gap-[1px] w-full h-full">
+                    {Array.from({length : 9}, (_, k) => {
+                      const digit = (draftNumbers[`r${i}c${j}`] || "").includes(String(k + 1)) ? k + 1 : ""
+                      return (
+                        <span key={k}
+                        className="flex items-center justify-center text-[0.5rem] text-white/60 font-serif">
+                          {digit}
+                        </span>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <span className="flex items-center justify-center text-2xl">
+                    {cell}
+                  </span>
+                )}
               </div>
             </div>
-          ) : (
-            <input
-              key={`${i}-${j}`}
-              value={cell}
-              onFocus={() => setFocusCell([i,j])}
-              onKeyDown={(e) => handleKeyDown(e, i, j) }
-              className={`w-10 h-10 ${border} text-center focus: outline-none ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} cursor-pointer carret text-2xl ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}
-            />
           )
         })
       )}
