@@ -206,14 +206,14 @@ export function SudokuGrid() {
           const isError = cell !== '' && cell !== solution[i][j] && !draftNumbers[`r${i}c${j}`]
           const isFixed = fixedGrid[i][j]
           const border = `
-            border-white/20
+            border border-white/20
             ${i % 3 === 0 ? "border-t-4" : "border-t"}
             ${j % 3 === 0 ? "border-l-4" : "border-l"}
             ${i === 8 ? "border-b-4" : "border-b"}
             ${j === 8 ? "border-r-4" : "border-r"}
           `
           return (
-            <div className="relative w-10 h-10 "
+            <div className= {`relative w-9 [@media(min-width:400px)]:w-10 h-10 ${border}`}
             key={`${i}-${j}`}>
               {/* Input invisible pour capter la saisie */}
               <input
@@ -224,7 +224,7 @@ export function SudokuGrid() {
                 readOnly
               />
               {/* Affichage des brouillons comme une grille */}
-              <div className={`absolute inset-0 w-full h-full ${border} ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}>
+              <div className={`absolute inset-0 w-full h-full  ${focusCell && focusCell[0] === i && focusCell[1] === j ? "bg-blue-400/40" : ''} ${isFixed ? "text-sky-400" : "text-white"} ${isError ? "bg-red-600" : ""}`}>
                 {draftNumbers[`r${i}c${j}`] ? (
                   <div className="grid grid-cols-3 gap-[1px] w-full h-full">
                     {Array.from({length : 9}, (_, k) => {
