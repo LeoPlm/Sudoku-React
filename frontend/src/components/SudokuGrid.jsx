@@ -3,6 +3,7 @@ import LeaderBoardToggle from "./LeaderBoardToggle"
 import { NewBestTime } from "./NewBestTime"
 import { ENDPOINTS } from "../config"
 import { Digits } from "./Digits"
+import { Loading } from "./Loading"
 
 const emptyGrid = Array.from({ length: 9 }, () => Array(9).fill(""));
 
@@ -21,6 +22,7 @@ export function SudokuGrid() {
   const [leaderBoardByLevel, setLeaderBoardByLevel] = useState("medium")
   const [draftMode, setDraftMode] = useState(false)
   const [draftNumbers, setDraftNumbers] = useState({})
+  const [loading, setLoading] = useState(false)
 
   const timerRef = useRef(null)
 
@@ -153,6 +155,13 @@ export function SudokuGrid() {
 
   return (
     <>
+    {loading && (
+      <Loading
+        setLoading = {setLoading}
+        grid = {grid}
+      />
+    )}
+    
     <div className="flex flex-col sm:flex-row justify-between items-start absolute top-0 left-0 w-full p-4">
       <div className="flex gap-2">
         <p className="text-2xl">Difficulty :</p>
