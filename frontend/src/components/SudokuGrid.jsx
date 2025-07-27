@@ -23,6 +23,7 @@ export function SudokuGrid() {
   const [draftMode, setDraftMode] = useState(false)
   const [draftNumbers, setDraftNumbers] = useState({})
   const [loading, setLoading] = useState(false)
+  const [eraserMode, setEraserMode] = useState(false)
 
   const timerRef = useRef(null)
 
@@ -91,6 +92,7 @@ export function SudokuGrid() {
   useEffect(() =>{
     const fetchSudoku = async () =>{
       try{
+        setLoading(true)
         const response = await fetch(ENDPOINTS.sudoku(level))  
         const data = await response.json()
         const formatedGrid = data.puzzle.map(row => row.map(cell => cell === "0" ? "" : cell))
@@ -113,12 +115,18 @@ export function SudokuGrid() {
         const fetchBestTime = await fetch(ENDPOINTS.leaderboard(level))
         const dataBestTime = await fetchBestTime.json()
         setBestTime(dataBestTime)
+        setLoading(false)
       }catch(err){
         console.log({err : err.message})
+        setLoading(false)
       }
     }
     fetchSudoku()
   }, [level]) 
+
+  useEffect(() => {
+  console.log("Grid mise à jour dans le parent :", grid);
+}, [grid]);
 
   useEffect(() => {
     if(lives <3){
@@ -155,6 +163,7 @@ export function SudokuGrid() {
 
   return (
     <>
+
     {loading && (
       <Loading
         setLoading = {setLoading}
@@ -204,12 +213,12 @@ export function SudokuGrid() {
             ${j === 8 ? "border-r-4" : "border-r"}
           `
           return (
-            <div className="relative w-10 h-10 ">
+            <div className="relative w-10 h-10 "
+            key={`${i}-${j}`}>
               {/* Input invisible pour capter la saisie */}
               <input
-                key={`${i}-${j}`}
                 value={cell}
-                onFocus={() => setFocusCell([i, j])}
+                onFocus={() => !eraserMode ? setFocusCell([i, j]) : handleChange(i, j, "")}
                 onKeyDown={(e) => handleKeyDown(e, i, j)}
                 className={`absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer`}
                 readOnly
@@ -245,6 +254,8 @@ export function SudokuGrid() {
     focusCell = {focusCell}
     setDraftMode = {setDraftMode}
     draftMode = {draftMode}
+    eraserMode = {eraserMode}
+    setEraserMode = {setEraserMode}
     />
 
     <LeaderBoardToggle

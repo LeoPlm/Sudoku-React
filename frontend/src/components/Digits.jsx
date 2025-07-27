@@ -1,6 +1,6 @@
+import { PiEraserFill } from "react-icons/pi"
 
-
-export const Digits = ({handleChange, focusCell, setDraftMode, draftMode}) => {
+export const Digits = ({handleChange, focusCell, setDraftMode, draftMode, setEraserMode, eraserMode}) => {
 
 
   return (
@@ -20,9 +20,21 @@ export const Digits = ({handleChange, focusCell, setDraftMode, draftMode}) => {
     }
     <div 
     className= {`w-12 h-12 bg-sky-600/50 rounded-full flex items-center justify-center pl-1 ${draftMode ? "border-white border-1" : ""}`}
-    onClick={() => setDraftMode(!draftMode)}
+    title="draft/brouillon"
+    onClick={() => {
+      setDraftMode(!draftMode)
+      eraserMode ? setEraserMode(false) : null}}
     >
       📝
+    </div>
+    <div 
+    className= {`w-12 h-12 bg-sky-600/50 rounded-full flex items-center justify-center pl-1 ${eraserMode ? "border-white border-1" : ""}`}
+    title="eraser/gomme"
+    onClick={() => {
+      setEraserMode(!eraserMode)
+      draftMode ? setDraftMode(false) : null}}
+    >
+      <PiEraserFill />
     </div>
     </div>
   )
